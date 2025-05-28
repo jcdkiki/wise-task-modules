@@ -1,40 +1,38 @@
+import ru.leti.wise.task.plugin.graph.GraphProperty;
 import ru.leti.wise.task.graph.model.Graph;
 import ru.leti.wise.task.graph.model.Edge;
 import ru.leti.wise.task.graph.model.Vertex;
-import ru.leti.wise.task.plugin.graph.GraphProperty;
-
 import java.util.*;
 
 public class TriangleChecker implements GraphProperty {
-
     @Override
     public boolean run(Graph graph) {
-        if (graph.isDirect() || graph.getVertexCount() < 3) {
+        if (graph.isDirect()) {
             return false;
         }
 
-        Map<Integer, Set<Integer>> adj = new HashMap<>();
-        for (Vertex v : graph.getVertexList()) {
-            adj.put(v.getId(), new HashSet<>());
-        }
-        for (Edge e : graph.getEdgeList()) {
-            int s = e.getSource();
-            int t = e.getTarget();
-            adj.get(s).add(t);
-            adj.get(t).add(s);
+        Map<Integer, Set<Integer>> adjacencyList = new HashMap<>();
+        for (Vertex vertex : graph.getVertexList()) {
+            adjacencyList.put(vertex.getId(), new HashSet<>());
         }
 
-        for (int v1 : adj.keySet()) {
-            for (int v2 : adj.get(v1)) {
-                if (v2 <= v1) continue;
-                for (int v3 : adj.get(v2)) {
-                    if (v3 > v2 && adj.get(v1).contains(v3)) {
-                        return true;
-                    }
+        for (Edge e : graph.getEdgeList()) {
+            int u = e.getSource();
+            int v = e.getTarget();
+            adjacencyList.get(u).add(v);
+            adjacencyList.get(v).add(u);
+        }
+
+        for (Edge edge : graph.getEdgeList()) {
+            Set<Integer> N_u = adjacencyList.get(edge.getSource());
+            Set<Integer> N_v = adjacencyList.get(edge.getTarget());
+
+            for (int w : N_u) {
+                if (N_v.contains(w)) {
+                    return true;
                 }
             }
         }
-        
         return false;
     }
 }
