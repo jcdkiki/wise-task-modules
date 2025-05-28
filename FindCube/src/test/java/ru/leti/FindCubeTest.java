@@ -10,10 +10,31 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class FindCubeTest {
 	@Test
 	public void findCubeTest() throws FileNotFoundException {
-    	FindCube FindCube = new FindCube();
+    	FindCube findCube = new FindCube();
 		Graph graph;
 
-		// graph = FileLoader.loadGraphFromJson("src/test/resources/directed_graph.json");
-    	// assertThat(spiderGraphProperty.run(graph)).isFalse();
+		graph = FileLoader.loadGraphFromJson("src/test/resources/complete_graph.json");
+    	assertThat(findCube.run(graph)).isFalse();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/cube_extra_edge.json");
+    	assertThat(findCube.run(graph)).isFalse();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/cube_plus_isolated.json");
+    	assertThat(findCube.run(graph)).isTrue();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/cycle_8.json");
+    	assertThat(findCube.run(graph)).isFalse();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/incomplete_cube.json");
+    	assertThat(findCube.run(graph)).isFalse();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/perfect_cube.json");
+    	assertThat(findCube.run(graph)).isTrue();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/small_graph.json");
+    	assertThat(findCube.run(graph)).isFalse();
+
+		graph = FileLoader.loadGraphFromJson("src/test/resources/two_cubes.json");
+    	assertThat(findCube.run(graph)).isTrue();
 	}
 }
